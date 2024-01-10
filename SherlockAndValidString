@@ -1,0 +1,79 @@
+/*
+* Sherlock considers a string to be valid if all characters of the string appear the same number of times. 
+* It is also valid if he can remove just  character at  index in the string, and the remaining characters will occur the same number of times. 
+* Given a string , determine if it is valid. If so, return YES, otherwise return NO.
+*/
+
+
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+class Result {
+
+    /*
+     * Complete the 'isValid' function below.
+     *
+     * The function is expected to return a STRING.
+     * The function accepts STRING s as parameter.
+     */
+
+    public static String isValid(String s) {
+    Map<Character, Integer> occurances = new HashMap<>();
+    for(char singleChar : s.toCharArray()) {
+        occurances.put(singleChar, occurances.getOrDefault(singleChar, 0)+1);
+    }
+    Map<Integer, Integer> frequencyCount = new HashMap<>();
+    for(int count : occurances.values()) {
+        frequencyCount.put(count, frequencyCount.getOrDefault(count, 0) +1);
+    }
+            if (frequencyCount.size() == 1) {
+                return "YES";
+            }else if(frequencyCount.size() > 2){
+                return "NO";
+            } else {
+        // If there are two unique frequencies and one of them occurs only once,
+        // the string can be made valid by removing one character
+        if (frequencyCount.size() == 2) {
+            int[] frequencies = frequencyCount.keySet().stream().mapToInt(Integer::intValue).toArray();
+            int minFrequency = Math.min(frequencies[0], frequencies[1]);
+            int maxFrequency = Math.max(frequencies[0], frequencies[1]);
+
+            // Check if one character can be removed to make the string valid
+            if ((minFrequency == 1 && frequencyCount.get(minFrequency) == 1) ||
+                    (maxFrequency - minFrequency == 1 && frequencyCount.get(maxFrequency) == 1)) {
+                return "YES";
+            }
+        }
+
+        // Otherwise, the string cannot be made valid
+        return "NO";
+    }
+
+}
+}
+
+public class Solution {
+    public static void main(String[] args) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
+
+        String s = bufferedReader.readLine();
+
+        String result = Result.isValid(s);
+
+        bufferedWriter.write(result);
+        bufferedWriter.newLine();
+
+        bufferedReader.close();
+        bufferedWriter.close();
+    }
+}
